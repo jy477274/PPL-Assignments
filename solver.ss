@@ -71,19 +71,23 @@
                       (let innerhoriz1 ([k 1])
                         (if (< k 5)
                             ;add new_state, if not new_state, break, yield
+                            (let ([new_state (state-horizontal-move state pos k)]))
                             (innerhoriz1 (+ k 1))))
                       (let innerhoriz2 ([k 1])
                         (if (< k 5)
                             ;add new_state, if not new_state, break, yield
+                            (let ([new_state (state-horizontal-move state pos (- k))]))
                             (innerhoriz2 (+ k 1))))]
                      [(state-is-vertical? state pos)
                       (let innervert1 ([k 1])
                         (if (< k 5)
+                            (let ([new_state (state-vertical-move state pos k)]))
                             ;add new_state, if not new_state, break, yield
                             (innervert1 (+ k 1))))
                       (let innervert2 ([k 1])
                         (if (< k 5)
                             ;add new_state, if not new_state, break, yield
+                            (let ([new_state (state-vertical-move state pos (- k))]))
                             (innervert2 (+ k 1))))])
            (outerloop (+ pos 1)))))))
 
