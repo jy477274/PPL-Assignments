@@ -97,7 +97,7 @@
                           (if (< k 5)
                               (let ([new_state (state-horizontal-move state pos k)])  )
                               ;if not new_state, break, yield
-                              (if(!new_state)
+                              (if(!new_state);may need to reverse this logic
                                 (cont ());return null(?)
                                 (new_state (state-horizontal-move state pos k)))
 
@@ -106,8 +106,8 @@
                           (if (< k 5)
                               (let ([new_state (state-horizontal-move state pos (- k))])  )
                               ;if not new_state, break, yield
-                              (if(!new_state)
-                                (cont null)
+                              (if(!new_state);may need to reverse this logic
+                                (cont ());return null?
                                 (new_state (state-horizontal-move state pos (- k))))
                               (innerhoriz2 (+ k 1))))]
                        [(state-is-vertical? state pos)
@@ -115,16 +115,16 @@
                           (if (< k 5)
                               (let ([new_state (state-vertical-move state pos k)])  )
                               ;if not new_state, break, yield
-                              (if(!new_state)
-                                (cont null)
+                              (if(!new_state);may need to reverse this logic
+                                (cont ());return null?
                                 (new_state (new_state (state-vertical-move state pos k))))
                               (innervert1 (+ k 1))))
                         (let innervert2 ([k 1])
                           (if (< k 5)
                               (let ([new_state (state-vertical-move state pos (- k))])  )
                               ;if not new_state, break, yield
-                              (if(!new_state)
-                                (cont null)
+                              (if(!new_state);may need to reverse this logic
+                                (cont ());return null?
                                 (new_state (state-vertical-move state pos (- k))))
                               (innervert2 (+ k 1))))]
                       )
