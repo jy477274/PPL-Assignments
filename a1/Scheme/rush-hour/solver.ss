@@ -55,6 +55,7 @@
 
           (hashtable-set! current startstate '())
           ;call run here
+          (run cuurent startstate)
       )
     ))
 
@@ -90,10 +91,12 @@
 
    (define (moves state)
      (let outerloop ([pos 0])
-       (if (< pos 64)
-           (if (state-is-end? state pos)
-              (call/cc (lambda (cont) ;may need to shift this to before the loop
-                (define helper
+
+        (call/cc (lambda (cont) ;may need to shift this to before the loop
+          (define helper
+           (if (< pos 64)
+              (if (state-is-end? state pos)
+                ;old call/cc location
                  (cond [(state-is-horizontal? state pos)
                         (let innerhoriz1 ([k 1])
                           (if (< k 5)
