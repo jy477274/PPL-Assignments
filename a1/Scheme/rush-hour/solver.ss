@@ -17,15 +17,7 @@
           (rnrs hashtables (6))
           (rush-hour state)
           (rush-hour utils))
-;
-;(define-syntax for
-;  (syntax-rules (in as)
-;    [(for elem in lst body ...)
-;     (for-each (lambda (elem)
-;                 body ...)
-;                 lst)]
-;    [(for lst as elem body ...)
-;     (for elem in lst body ...)]))
+
 
 (define-syntax while
   (syntax-rules ()
@@ -55,14 +47,20 @@
 
           (hashtable-set! current startstate '())
           ;call run here
-          (run cuurent startstate)
+          (run '(current, next, seen))
       )
     ))
 
-   (define (run current next)
+   (define (run lists)
      (while #t
-            (for seq in current
-                 (let* ([sol (search(seq))])
+            (for seq in (car lists)
+                 (let* ([sol (search seq lists)])
+                   ;if sol not false print out solution here
+                   ))
+            (cond [(not(null? next))
+                   ;how to make one hashtable equal to another
+                   (hashtable-clear! next)
+                   ]))
         ;not sure about if sol return sol and if self.next
 
    )
@@ -75,11 +73,9 @@
                    (cons (car path) (cdr nextstateinfo))
                    path]
             ;CAN PROBABLY DO (hashtable-contains? seen (car nextstateinfo)) instead of this deal
-                   [((eq? (car nextstateinfo) (filter
-                                              (lambda (x)
-                                                (eq? (car nextstateinfo))))))
-                   (hashtable-set! next (car nextstateinfo) (cons (car path) (cdr nextstateinfo)))
-                   (hashtable-set! seen (car nextstateinfo) (cdr nextstateinfo)]))
+                   [(hashtable-contains? (cddr lists) (car nextstateinfo))
+                   (hashtable-set! (cadr lists) (car nextstateinfo) (cons (car path) (cdr nextstateinfo)))
+                   (hashtable-set! (cddr lists) (car nextstateinfo) (cdr nextstateinfo)]))
                     ;use contains on the hash table here instead of filtering 
 
                    ;append path+move, next_state to next list DONE ABOVE
