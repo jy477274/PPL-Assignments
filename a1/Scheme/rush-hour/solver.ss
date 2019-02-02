@@ -17,15 +17,15 @@
           (rnrs hashtables (6))
           (rush-hour state)
           (rush-hour utils))
-
-(define-syntax for
-  (syntax-rules (in as)
-    [(for elem in lst body ...)
-     (for-each (lambda (elem)
-                 body ...)
-                 lst)]
-    [(for lst as elem body ...)
-     (for elem in lst body ...)]))
+;
+;(define-syntax for
+;  (syntax-rules (in as)
+;    [(for elem in lst body ...)
+;     (for-each (lambda (elem)
+;                 body ...)
+;                 lst)]
+;    [(for lst as elem body ...)
+;     (for elem in lst body ...)]))
 
 (define-syntax while
   (syntax-rules ()
@@ -79,6 +79,8 @@
                                                 (eq? (car nextstateinfo))))))
                    (hashtable-set! next (car nextstateinfo) (cons (car path) (cdr nextstateinfo)))
                    (hashtable-set! seen (car nextstateinfo) (cdr nextstateinfo)]))
+                    ;use contains on the hash table here instead of filtering 
+
                    ;append path+move, next_state to next list DONE ABOVE
 
                    ;add next_state to the seen list DONE ABOVE
@@ -90,7 +92,7 @@
      (let outerloop ([pos 0])
        (if (< pos 64)
            (if (state-is-end? state pos)
-              (call/cc (lambda (cont);may need to shift this to before the loop
+              (call/cc (lambda (cont) ;may need to shift this to before the loop
                 (define helper
                  (cond [(state-is-horizontal? state pos)
                         (let innerhoriz1 ([k 1])
