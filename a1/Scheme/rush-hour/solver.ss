@@ -40,14 +40,14 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;Create start state from string representation
-    (let* ([startstate (state-from-string-rep puzzle)])
-          ([current (make-eqv-hashtable)])
-          ([next (make-eqv-hashtable)])
-          ([seen (make-eqv-hashtable)])
+    (let* ([startstate (state-from-string-rep puzzle)]
+          [current (make-eqv-hashtable)]
+          [next (make-eqv-hashtable)]
+          [seen (make-eqv-hashtable)])
 
           (hashtable-set! current startstate '())
           ;call run here
-          (run '(current, next, seen))
+          (run '(current next seen))
       )
     ))
 
