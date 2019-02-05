@@ -49,13 +49,14 @@
           ;call run here
           (run '(current next seen))
       )
-    ))
+    )
 
    (define (run lists)
      (while #t
             (for seq in (car lists)
                  (let* ([sol (search seq lists)])
                    ;if sol not false print out solution here
+		   (println "yes")
                    ))
             (cond [(not(null? next))
                    ;how to make one hashtable equal to another
@@ -66,8 +67,8 @@
    )
 
    (define (search path)
-     (let* ([currstate (cadr path)])
-           ([movelist (moves currstate)])
+     (let* ([currstate (cadr path)]
+           [movelist (moves currstate)])
        (for nextstateinfo in movelist
             (cond [(state-is-solved? (car nextstateinfo))
                    (cons (car path) (cdr nextstateinfo))
@@ -75,7 +76,7 @@
             ;CAN PROBABLY DO (hashtable-contains? seen (car nextstateinfo)) instead of this deal
                    [(hashtable-contains? (cddr lists) (car nextstateinfo))
                    (hashtable-set! (cadr lists) (car nextstateinfo) (cons (car path) (cdr nextstateinfo)))
-                   (hashtable-set! (cddr lists) (car nextstateinfo) (cdr nextstateinfo)]))
+                   (hashtable-set! (cddr lists) (car nextstateinfo) (cdr nextstateinfo))]))
                     ;use contains on the hash table here instead of filtering 
 
                    ;append path+move, next_state to next list DONE ABOVE
@@ -129,5 +130,5 @@
                                 (new_state (state-vertical-move state pos (- k))))
                               (innervert2 (+ k 1))))]
                       )
-           (outerloop (+ pos 1)))))))))
+           (outerloop (+ pos 1))))))))))
 
