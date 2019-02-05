@@ -60,6 +60,7 @@
                    ))
             (cond [(not(null? next))
                    ;how to make one hashtable equal to another
+		   (hashtable-set! current (hashtable-copy next))
                    (hashtable-clear! next)
                    ]))
         ;not sure about if sol return sol and if self.next
