@@ -58,16 +58,16 @@
                    ;if sol not false print out solution here
 		   (println "yes")
                    ))
-            (cond [(not(null? next))
+            (cond [(not(null? next)) ;change to cadr lists
                    ;how to make one hashtable equal to another
-		   (hashtable-set! current (hashtable-copy next))
-                   (hashtable-clear! next)
+		   (hashtable-set! current (hashtable-copy next)) ;car lists and cadr lists
+                   (hashtable-clear! next) ;cadr lists
                    ]))
         ;not sure about if sol return sol and if self.next
 
    )
 
-   (define (search path)
+   (define (search path) ;need to pass lists in here 
      (let* ([currstate (cadr path)]
            [movelist (moves currstate)])
        (for nextstateinfo in movelist
