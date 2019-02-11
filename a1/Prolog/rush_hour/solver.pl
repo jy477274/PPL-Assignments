@@ -19,7 +19,14 @@
 % IMPLEMENT THE FOLLOWING PREDICATE
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puzzle_solution(Puzzle, Solution) :-
+  puzzle_state(Puzzle, State),
+  solve_puzzle(State, Solution).
+  
+solve_puzzle(State, Solution) :-
 
+
+  
 
 % Solve the puzzle
 %solve_puzzle(Puzzle, Moves).
