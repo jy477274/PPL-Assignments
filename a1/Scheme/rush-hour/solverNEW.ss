@@ -18,6 +18,7 @@
           (rush-hour state)
           (rush-hour utils))
 
+
   ;; Solve a Rush Hour puzzle represented as a 36-character string listing the
   ;; 6x6 cells of the board in row-major order.  Empty cells are marked with
   ;; "o".  Occupied cells are marked  with letters representing pieces.  Cells
@@ -41,14 +42,15 @@
           (begin (run seen current next))))
 
   (define (run seen current next)
-    (for (state) in current
+    (print "In run")
+    (for state in current
          (let* ([neighbours (moves (car state))])
            ;check if neighbours is empty -> no solution if empty
            (if (null? neighbours)
                #f  ;no solution
-               ((for (neighbour) in neighbours
+               ((for neighbour in neighbours
                      (cond [(not(hashtable-contains? seen (car neighbour)))
-                            (hashtable-set! seen (car neighbour))
+                            (hashtable-set! seen (car neighbour) #t)
                             (cons neighbour next)]
 
                            ;print solution moves
@@ -68,6 +70,7 @@
         ;(check-solution (car statelist))))
 
   (define (moves state)
+    (print "In moves")
     (let*([position (make-list 0 64)] ;need make-list func
           [disp '(-4 -3 -2 -1 1 2 3 4)])
       (begin
@@ -100,5 +103,4 @@
         (cons start (make-list (+ start 1) end))
         '()))
 );close library
-
 
