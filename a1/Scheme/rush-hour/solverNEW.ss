@@ -32,45 +32,37 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;Create start state from string representation
-    ;Create lists
-    (let* ([startstate (state-from-string-rep puzzle)]
-          [current (list '(startstate '() ))]
+    ;(print (vector-length (state-from-string-rep puzzle)))
+    (let* (;[startstate (state-from-string-rep puzzle)]
+          [current (list '((state-from-string-rep puzzle) '() ))] ;this bitch be storing strings
           [next '()]
           [seen (make-eqv-hashtable)])
+          ;(print startstate)
 
-          (hashtable-set! seen startstate #t)
+          (hashtable-set! seen (state-from-string-rep puzzle) #t)
 
           (begin (run seen current next))))
 
   (define (run seen current next)
     (print "In run")
     (for state in current
+         (print (car state)) ;mf prints a mf string
          (let* ([neighbours (moves (car state))])
+           (print "move generation successful")
            ;check if neighbours is empty -> no solution if empty
            (if (null? neighbours)
                #f  ;no solution
-               ;cycle through the state's neighbours
                ((for neighbour in neighbours
                      (cond [(not(hashtable-contains? seen (car neighbour)))
-                            (hashtable-set! seen (car neighbour) #t) ;add neighbour to seen list
-                            (cons neighbour next)] ; add neighbour to next list
+                            (hashtable-set! seen (car neighbour) #t)
+                            (cons neighbour next)]
 
                            ;print solution moves
                            [(state-is-solved? (car neighbour))
                             (for-each println (reverse (cdr neighbour)))]
-                           
-                           ;run again with next as new current and empty list as new next
+
                            [else (run seen next '())])))))))
 
-
-
-    ;may need to change this part. Could end up returning
-    ;no solution recursively for any given list
-  ;(define (check-solution statelist)
-    ;(if (null? statelist) #f) ;no solution found -> return false
-    ;(if (state-is-solved? (car statelist))
-        ;(car statelist)
-        ;(check-solution (car statelist))))
 
   (define (moves state)
     (print "In moves")
@@ -100,7 +92,7 @@
 
                             (filter (lambda (pos) (state-is-end? state pos)) position)))))))
 
-  ;helper function to make a list containing values from start to end
+
   (define (make-list start end)
     (if (<= start end)
         (cons start (make-list (+ start 1) end))
