@@ -102,7 +102,7 @@
 
   ;helper function to make a list containing values from start to end
   (define (make-list start end)
-    (if (< = start end)
+    (if (<= start end)
         (cons start (make-list (+ start 1) end))
         '()))
 );close library
