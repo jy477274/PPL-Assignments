@@ -32,22 +32,22 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;Create start state from string representation
-    ;(print (vector-length (state-from-string-rep puzzle)))
-    (let* (;[startstate (state-from-string-rep puzzle)]
-          [current (list '((state-from-string-rep puzzle) '() ))] ;this bitch be storing strings
-          [next '()]
+    (define startstate (state-from-string-rep puzzle))
+    (let* (
+          [current (list (list '() startstate))]
+          [next (list '())]
           [seen (make-eqv-hashtable)])
           ;(print startstate)
 
-          (hashtable-set! seen (state-from-string-rep puzzle) #t)
+          (hashtable-set! seen startstate #t)
 
           (begin (run seen current next))))
 
   (define (run seen current next)
     (print "In run")
     (for state in current
-         (print (car state)) ;mf prints a mf string
-         (let* ([neighbours (moves (car state))])
+         ;(print (cdr state)) ;mf prints a mf string
+         (let* ([neighbours (moves (cadr state))])
            (print "move generation successful")
            ;check if neighbours is empty -> no solution if empty
            (if (null? neighbours)
@@ -66,6 +66,7 @@
 
   (define (moves state)
     (print "In moves")
+    (print state)
     (let*([position (make-list 0 64)] ;need make-list func
           [disp '(-4 -3 -2 -1 1 2 3 4)])
       (begin
@@ -98,4 +99,5 @@
         (cons start (make-list (+ start 1) end))
         '()))
 );close library
+
 
