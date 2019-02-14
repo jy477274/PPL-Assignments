@@ -38,49 +38,19 @@ possible_moves(State, Pos, VMoves) :- % Splits this bad boi into two lists conta
   hor_list()
   virt_list()
   
-  
+% Basiclly I"m at the point where I don't know how to match the new states that I'm generating to the moves, (that I need
+% for an actual solution.) I'm planning on storing this info into nested lists or sets, possibly using setof. I also need
+% make sure I'm storing the values correctly. I think this way: list<-(STATE, (list of moves, head of which is the most recent move))
+% I don't really know how I should go about doing it. Need to ask Alex/Norbert.
+
+
+
+
 hor_list(State, Pos, NewState) :-
   between(-4, 4, Off),
   findall(Off, horizontal_move(State, Pos, Off, NewStates), NewStates (,add(move)),
 
 virt_list(State, Pos, NewState) :- 
-  
-  
-  findall(Hcars, horizontal_move(State, HCars,))
-  
-  
-
-
-  
-  
-    
- 
- 
- 
- valid_pos(X, ,Pos) :-
-   findall(Pos, state_is_occupied(State, X), Rs),
-   findAll(Rs, state_is_end(State, Rs), Pos).
-  
-
-
-
-%for(i=0; i<64, i++)
-% state_is_horizontal(State, i)
-%  state_is_end(State, i) - check if the square is part of a horizontal car, if its the end of that car
-%	for(j=1, j<5, j++)
-%    horizontal_move(State, i, j, NewState)  -- on success, where do we put NewState (in _next and _seen list?)
-%	for(j=-1, j>-5, j--)
-%	 horizontal_move(State, i, j, NewState)
-% state_is_vertical(State, i)
-%  state_is_end(State, i)
-%	for(j=1, j<5, j++)
-%    vertical_move(State, i, j, NewState)  -- on success, where do we put NewState (in _next and _seen list?)
-%	for(j=-1, j>-5, j--)
-%	 vertical_move(State, i, j, NewState)
-
-% check current/next list using state_is_solved(State) to look for solution - print sol and exit if true
-% else call solve_puzzle with state in _next and set _current list to _next list and wipe _next
-% 
 
 % Solve the puzzle
 %solve_puzzle(Puzzle, Moves).
