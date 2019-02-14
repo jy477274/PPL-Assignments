@@ -38,7 +38,7 @@ possible_moves(State, Pos, VMoves) :- % Splits this bad boi into two lists conta
   hor_list()
   virt_list()
   
-% Basiclly I"m at the point where I don't know how to match the new states that I'm generating to the moves, (that I need
+% Basically I"m at the point where I don't know how to match the new states that I'm generating to the moves, (that I need
 % for an actual solution.) I'm planning on storing this info into nested lists or sets, possibly using setof. I also need
 % make sure I'm storing the values correctly. I think this way: list<-(STATE, (list of moves, head of which is the most recent move))
 % I don't really know how I should go about doing it. Need to ask Alex/Norbert.
