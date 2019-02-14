@@ -35,8 +35,8 @@ valid_pos(State, VPos) :- % Gens all possible car rightmost/bottom cell location
 possible_moves(State, Pos, VMoves) :- % Splits this bad boi into two lists containing horiz and virt cars. gens lists of all possible moves 
   findall(Pos, state_is_horizontal(State, Pos), HCars), %then merges the lists into a giant valid moves lists containing newStates and the lists of moves
   findall(Pos, state_is_vertical(State, Pos), VCars),
-  hor_list()
-  virt_list()
+  hor_list(),
+  virt_list(),
   
 % Basically I"m at the point where I don't know how to match the new states that I'm generating to the moves, (that I need
 % for an actual solution.) I'm planning on storing this info into nested lists or sets, possibly using setof. I also need
