@@ -36,7 +36,7 @@
     (if (<= start end)
         (cons start (makelist (+ start 1) end))
         '())
-    (define startstate (state-from-string-rep puzzle))
+    (define startstate (state-from-string-rep puzzle)
     (let* (
           [current (list (list '() startstate))]
           [next (list '())]
@@ -45,7 +45,7 @@
 
           (hashtable-set! seen startstate #t)
 
-          (begin (run seen current next))))
+          (begin (run seen current next)))
 
   (define (run seen current next)
     (print "In run \n")
@@ -67,7 +67,7 @@
                            [(state-is-solved? (car neighbour))
                             (for-each println (reverse (cdr neighbour)))]
 
-                           [else (run seen next '())])))))))
+                           [else (run seen next '())]))))))
 
 
   (define (moves state)
@@ -98,6 +98,8 @@
                                                         (cons (state-vertical-move state pos disp)
                                                               (state-make-move pos disp))))#f)))disp))))
 
-                        (filter (lambda (pos) (state-is-end? state pos)) position))))))));close library
+                        (filter (lambda (pos) (state-is-end? state pos)) position))))))))
+
+)));close library
 
 
