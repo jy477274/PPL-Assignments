@@ -22,18 +22,34 @@ puzzle_solution(Puzzle, Solution) :-
   puzzle_state(Puzzle, State),
   solve_puzzle(State, Solution).
   
-solve_puzzle(State, Solution) :-
+solve_puzzle(State, Solution) :- % Driver pred for puzzle_solution, not sure if I need it but my head will explode if I try to be too "elegant"
   valid_pos(State, Pos),
   possible_moves(State, Pos, Moves),
   once(findall(Moves, state_is_solved(first(Moves), Solution))) ->.
   
-valid_pos(State, VPos) :-% Gens all possible car rightmost/bottom cell locations, retruns the list of values Vpos
+valid_pos(State, VPos) :- % Gens all possible car rightmost/bottom cell locations, retruns the list of values Vpos
   between(0, 63, X),
   findall(X, state_is_occupied(State, X), Occ),
   findall(Occ, state_is_end(State, X), VPos).
+ 
+possible_moves(State, Pos, VMoves) :- % Splits this bad boi into two lists containing horiz and virt cars. gens lists of all possible moves 
+  findall(Pos, state_is_horizontal(State, Pos), HCars), %then merges the lists into a giant valid moves lists containing newStates and the lists of moves
+  findall(Pos, state_is_vertical(State, Pos), VCars),
+  hor_list()
+  virt_list()
+  
+  
+hor_list(State, Pos, NewState) :-
+  between(-4, 4, Off),
+  findall(Off, horizontal_move(State, Pos, Off, NewStates), NewStates (,add(move)),
+
+virt_list(State, Pos, NewState) :- 
+  
+  
+  findall(Hcars, horizontal_move(State, HCars,))
+  
   
 
-possible_moves(State, Pos, VMoves) :-
 
   
   
