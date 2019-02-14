@@ -13,7 +13,6 @@
 % Import the state predicates
 :- [rush_hour/state].
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % IMPLEMENT THE FOLLOWING PREDICATE
@@ -24,6 +23,14 @@ puzzle_solution(Puzzle, Solution) :-
   solve_puzzle(State, Solution).
   
 solve_puzzle(State, Solution) :-
+  between(0, 63, X),
+  valid_pos(X, Ps),
+  
+  
+ valid_pos(X, ,Pos) :-
+   findall(Pos, state_is_occupied(State, X), Rs),
+   findAll(Rs, state_is_end(State, Rs), Pos).
+  
 
 
 
