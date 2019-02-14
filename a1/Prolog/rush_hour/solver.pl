@@ -23,10 +23,24 @@ puzzle_solution(Puzzle, Solution) :-
   solve_puzzle(State, Solution).
   
 solve_puzzle(State, Solution) :-
+  valid_pos(State, Pos),
+  possible_moves(State, Pos, Moves),
+  once(findall(Moves, state_is_solved(first(Moves), Solution))) ->.
+  
+valid_pos(State, VPos) :-% Gens all possible car rightmost/bottom cell locations, retruns the list of values Vpos
   between(0, 63, X),
-  valid_pos(X, Ps),
+  findall(X, state_is_occupied(State, X), Occ),
+  findall(Occ, state_is_end(State, X), VPos).
+  
+
+possible_moves(State, Pos, VMoves) :-
+
   
   
+    
+ 
+ 
+ 
  valid_pos(X, ,Pos) :-
    findall(Pos, state_is_occupied(State, X), Rs),
    findAll(Rs, state_is_end(State, Rs), Pos).
