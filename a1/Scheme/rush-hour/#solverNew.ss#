@@ -1,0 +1,100 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; rush-hour/solver.ss
+;;;
+;;; Rush Hour puzzle solver
+;;; (C) 2019 Norbert Zeh (nzeh@cs.dal.ca)
+;;;
+;;; Implementation of the search for a shortest move sequence that solves a
+;;; given Rush Hour puzzle.
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(library (rush-hour solver)
+  (export solve-puzzle)
+  (import (rnrs (6))
+          (rnrs hashtables (6))
+          (rush-hour state)
+          (rush-hour utils))
+
+
+  ;; Solve a Rush Hour puzzle represented as a 36-character string listing the
+  ;; 6x6 cells of the board in row-major order.  Empty cells are marked with
+  ;; "o".  Occupied cells are marked  with letters representing pieces.  Cells
+  ;; occupied by the same piece carry the same letter.
+  (define (solve-puzzle puzzle)
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;
+    ;; IMPLEMENT THIS FUNCTION
+    ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    ;Create start state from string representation
+    (define startstate (state-from-string-rep puzzle))
+    (let* (
+          [current (list (list '() startstate))]
+          [next (list '())]
+          [seen (make-eqv-hashtable)])
+          ;(print startstate)
+
+          (hashtable-set! seen startstate #t)
+
+          (begin (run seen current next))))
+
+  (define (run seen current next)
+    (print "In run\n")
+    (for state in current
+         (print (cdr state)) ;mf prints a mf string
+	 
+         (let* ([neighbours (moves (cadr state))])
+           (print "move generation successful\n")
+           ;check if neighbours is empty -> no solution if empty
+           (if (null? neighbours)
+               #f  ;no solution
+               ((for neighbour in neighbours
+                     (cond [(not(hashtable-contains? seen (car neighbour)))
+                            (hashtable-set! seen (car neighbour) #t)
+                            (cons neighbour next)]
+
+                           ;print solution moves
+                           [(state-is-solved? (car neighbour))
+                            (for-each println (reverse (cdr neighbour)))]
+
+                           [else (run seen next '())])))))))
+
+
+  (define (moves state)
+    (print "In moves\n")
+    (print state)
+    (print "\n")
+    (let*([positions (make-list 0 64)] ;need make-list func
+          [disp '(-4 -3 -2 -1 1 2 3 4)]
+	  [result (list '())])
+      
+      (for position in positions
+	   (if (state-is-end? state position)
+	       (begin 
+		 (cond [(state-is-horizontal? state position)
+			(begin 
+			  (for d in disp
+			       (if (state-horizontal-move state position d)
+				   (begin 
+				     (cons (cons (state-horizontal-move state position d)(state-make-move position d))result)) result)))]
+		       [(state-is-vertical? state position)
+			(begin
+			  (for d in disp
+			       (if(state-vertical-move state position d)
+				  (begin
+				    (cons(cons(state-horizontal-move state position d)(state-make-move position d))result)) result)))])) result))))
+      ;(filter (lambda (position) (state-is-end? state position)) position)))
+
+
+  (define (make-list start end)
+    (if (<= start end)
+        (cons start (make-list (+ start 1) end))
+        '()))
+);close library
+
+
