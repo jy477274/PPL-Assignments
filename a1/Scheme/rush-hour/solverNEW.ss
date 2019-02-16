@@ -30,22 +30,22 @@
     ;; IMPLEMENT THIS FUNCTION
     ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    (let ([seen (make-eqv-hashtable)])
+      (hashtable-set! seen (state-from-string-rep puzzle) '())
+      (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
+        (let* ([next (apply append (for state in current
+                                        (moves state seen)))])
+          ;(for-each println next)
+          (if (null? next)
+              #f
+              (for neighbour in next ;;this won't work yet
+                   (if (state-is-solved? (car neighbour))
+                       (reverse (cdr neighbour))
+                       (search next))))))))
 
-    (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
-                 ;[seen (list (state-from-string-rep puzzle))])
-      (let* ([next (apply append (for state in current
-                    (moves state)))])
-        (for-each println next)
-        (if (null? next)
-            #f
-            (for neighbour in next
-                 (if (state-is-solved? (car neighbour))
-                     (reverse (cdr neighbour))
-                     (search next)))))))
 
 
-
-  (define (moves state)
+  (define (moves state seen)
     ;(print "In moves \n")
     (let loop ([neighbours '()]
                [candidates (apply append (make-candidates))])
@@ -54,8 +54,10 @@
           (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
                                (state-vertical-move (car state) (caar candidates)(cdar candidates)))])
             (if neighbour
-                (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
-                      (cdr candidates))
+                (begin
+                  (hashtable-set! seen neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state)))
+                  (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
+                        (cdr candidates)))
                 (loop neighbours (cdr candidates)))))))
 
   (define (make-candidates)
