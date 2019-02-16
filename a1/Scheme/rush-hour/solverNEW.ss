@@ -32,69 +32,74 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;Create start state from string representation
-    (define startstate (state-from-string-rep puzzle))
-    (let* (
-          [current (list (list '() startstate))]
-          [next (list '())]
-          [seen (make-eqv-hashtable)])
-          ;(print startstate)
+    ;(define startstate (state-from-string-rep puzzle))
+    (let* ([startstate (state-from-string-rep puzzle)]
+           [current (cons (cons startstate (list '('start))) '())]
+           [next (list '())]
+           [seen (make-eqv-hashtable)])
+           (print startstate)
+          ;Reformatted into begin block
+          (begin
+            (hashtable-set! seen startstate #t)
+            (run seen current next))))
+          ;(hashtable-set! seen startstate #t)
 
-          (hashtable-set! seen startstate #t)
+          ;Maybe can do a if run #f then print no solution
+          ;(begin (run seen current next))))
 
-          (begin (run seen current next))))
-
+  ;Calls run recursively until solution is found or next is empty
   (define (run seen current next)
-    (print "In run")
-    (for state in current
-         ;(print (cdr state)) ;mf prints a mf string
-         (let* ([neighbours (moves (cadr state))])
-           (print "move generation successful")
-	   (for-each print neighbours)
-           ;check if neighbours is empty -> no solution if empty
-           (if (null? neighbours)
-               #f  ;no solution
-               ((for neighbour in neighbours
-                     (cond [(not(hashtable-contains? seen (car neighbour)))
-                            (hashtable-set! seen (car neighbour) #t)
-                            (cons neighbour next)]
+    (print "In run \n")
+    (if (null? (sol-search seen current next))
+        #f ;No solution
+        (run seen next '()))) ;may need a begin here but not sure
 
-                           ;print solution moves
-                           [(state-is-solved? (car neighbour))
-                            (for-each println (reverse (cdr neighbour)))]
+  ;The meat that uses moves to generate neighbours to each state in current.
+  ;If they haven't been seen add to seen and next lists.
+  ;Check if solution and just print and exit.
+  (define (sol-search seen current next)
+    (print "In sol-state \n")
+    (begin
+      (for state in current
+           (let* ([neighbours (moves (car state))])
+              (print "Neighbours from moves: \n")
+              ;(for-each println neighbours)
+              (for neighbour in neighbours
+                   (cond [(state-is-solved? (car neighbour)) ;may need to change car depending on moves
+                          (begin
+                            (for-each println (reverse (cdr neighbour))) ;may need to change cdr
+                            (exit))]
 
-                           [else (run seen next '())])))))))
+                         [(not(hashtable-contains? seen (car neighbour))) ;may need to change car
+                          (begin
+                           ;cons state's moves onto neighbour before adding to next
+                            (set! next (append next (cons (car neighbour) (cons (cdr neighbour)(cdr state)))))
+                            (hashtable-set! seen (car neighbour) #t))]))))
+      (print "Next list: \n")
+      (for-each println next)
+      (if (null? next)
+          '()
+          next)))
 
 
   (define (moves state)
-    (print "In moves")
-    (print state)
-    (let*([position (make-list 0 64)] ;need make-list func
-          [disp '(-4 -3 -2 -1 1 2 3 4)]
-	  [result (list '())])
-      
-      (map (lambda (position)
-	     (begin 
-	       (if (state-is-horizontal? state position)
-		   (map (lambda (disp)
-			  (begin 
-			    (if (state-horizontal-move state position disp)
-				(cons (cons state (state-horizontal-move state position disp)) result)
-				)
-			  )))
-		   (map (lambda (disp)
-			  (begin 
-			    (if (state-vertical-move state position disp)
-				(cons (cons state (state-vertical-move state position disp)) result)
-			      )
-			  )))
-		 )))
-      ;(filter (lambda (position) (state-is-end? state position)) position)))
-)))
+    (print "In moves \n")
+    (let loop ([neighbours '()]
+               [candidates (apply append (make-candidates))])
+      (if (null? candidates)
+          neighbours
+          (let ([neighbour (or (state-horizontal-move state (caar candidates)(cdar candidates))
+                               (state-vertical-move state (caar candidates)(cdar candidates)))])
+            (if neighbour
+                (loop (cons (cons neighbour (state-make-move (caar candidates)(cdar candidates))) neighbours)
+                      (cdr candidates))
+                (loop neighbours (cdr candidates)))))))
 
-  (define (make-list start end)
-    (if (<= start end)
-        (cons start (make-list (+ start 1) end))
-        '()))
+  (define (make-candidates)
+    (map-for position from 1 to 64
+             (map-for disp from -4 to 4
+                      (cons position disp))))
 );close library
+
 
 
