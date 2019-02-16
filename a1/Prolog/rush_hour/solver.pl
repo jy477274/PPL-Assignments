@@ -1,3 +1,4 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % rush_hour/solver.pl
@@ -25,6 +26,9 @@ puzzle_solution(Puzzle, Solution) :-
 
 
 solve_puzzle(State, Solution):-
+    state_is_solved(State).
+
+solve_puzzle(State, Solution):-
     gen_new_states(State, States),
     solve_puzzle(States, Solution).
 
@@ -44,5 +48,6 @@ find-cars(State, Cars):-
 
 % Solve the puzzle
 %solve_puzzle(Puzzle, Moves).
+
 
 
