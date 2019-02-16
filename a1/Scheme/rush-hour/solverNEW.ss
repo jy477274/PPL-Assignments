@@ -31,67 +31,30 @@
     ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    ;Create start state from string representation
-    ;(define startstate (state-from-string-rep puzzle))
-    (let* ([startstate (state-from-string-rep puzzle)]
-           [current (cons (cons startstate (list '('start))) '())]
-           [next (list '())]
-           [seen (make-eqv-hashtable)])
-           (print startstate)
-          ;Reformatted into begin block
-          (begin
-            (hashtable-set! seen startstate #t)
-            (run seen current next))))
-          ;(hashtable-set! seen startstate #t)
+    (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
+                 ;[seen (list (state-from-string-rep puzzle))])
+      (let* ([next (apply append (for state in current
+                    (moves state)))])
+        (for-each println next)
+        (if (null? next)
+            #f
+            (for neighbour in next
+                 (if (state-is-solved? (car neighbour))
+                     (reverse (cdr neighbour))
+                     (search next)))))))
 
-          ;Maybe can do a if run #f then print no solution
-          ;(begin (run seen current next))))
-
-  ;Calls run recursively until solution is found or next is empty
-  (define (run seen current next)
-    (print "In run \n")
-    (if (null? (sol-search seen current next))
-        #f ;No solution
-        (run seen next '()))) ;may need a begin here but not sure
-
-  ;The meat that uses moves to generate neighbours to each state in current.
-  ;If they haven't been seen add to seen and next lists.
-  ;Check if solution and just print and exit.
-  (define (sol-search seen current next)
-    (print "In sol-state \n")
-    (begin
-      (for state in current
-           (let* ([neighbours (moves (car state))])
-              (print "Neighbours from moves: \n")
-              ;(for-each println neighbours)
-              (for neighbour in neighbours
-                   (cond [(state-is-solved? (car neighbour)) ;may need to change car depending on moves
-                          (begin
-                            (for-each println (reverse (cdr neighbour))) ;may need to change cdr
-                            (exit))]
-
-                         [(not(hashtable-contains? seen (car neighbour))) ;may need to change car
-                          (begin
-                           ;cons state's moves onto neighbour before adding to next
-                            (set! next (append next (cons (car neighbour) (cons (cdr neighbour)(cdr state)))))
-                            (hashtable-set! seen (car neighbour) #t))]))))
-      (print "Next list: \n")
-      (for-each println next)
-      (if (null? next)
-          '()
-          next)))
 
 
   (define (moves state)
-    (print "In moves \n")
+    ;(print "In moves \n")
     (let loop ([neighbours '()]
                [candidates (apply append (make-candidates))])
       (if (null? candidates)
           neighbours
-          (let ([neighbour (or (state-horizontal-move state (caar candidates)(cdar candidates))
-                               (state-vertical-move state (caar candidates)(cdar candidates)))])
+          (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
+                               (state-vertical-move (car state) (caar candidates)(cdar candidates)))])
             (if neighbour
-                (loop (cons (cons neighbour (state-make-move (caar candidates)(cdar candidates))) neighbours)
+                (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
                       (cdr candidates))
                 (loop neighbours (cdr candidates)))))))
 
