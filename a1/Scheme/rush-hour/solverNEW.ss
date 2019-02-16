@@ -30,7 +30,7 @@
     ;; IMPLEMENT THIS FUNCTION
     ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     (let ([seen (make-eqv-hashtable)])
+    (let ([seen (make-eqv-hashtable)])
       (hashtable-set! seen (state-from-string-rep puzzle) '())
       (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
         (let* ([next (apply append (for state in current
@@ -39,7 +39,7 @@
           (if (null? next)
               #f
               (for neighbour in next ;;this won't work yet                                                                                                                                                 
-                   (if (state-is-solved? (car neighbour));My compiler throws an error here for some reason, making this very difficult to test
+                   (if (state-is-solved? (car neighbour))
                        (reverse (cdr neighbour))
                        (search next))))))))
 
@@ -54,7 +54,7 @@
           (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
                                (state-vertical-move (car state) (caar candidates)(cdar candidates)))]);horizontal or vertical moves or neither will succeed here. if either succeed, keep processing. this\
  may be the best place to filter for seen neighbours or immediately after this in the if statement, as if we continue, we will set the neighbour as seen again, even if it has been seen                   
-            (if neighbour
+            (if (and neighbour (not (hashtable-contains? seen neighbour))) ;this should filter seen neighbours out                                                                                         
                 (begin
                   (hashtable-set! seen neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state)));set the neighbour as seen                                                        
                   (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
@@ -65,4 +65,6 @@
     (map-for position from 1 to 64
              (map-for disp from -4 to 4
                       (cons position disp))))
-);close library                                         
+);close library                                                                                                                                                                                            
+
+
