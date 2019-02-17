@@ -35,44 +35,46 @@
       (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
         (let* ([next (apply append (for state in current
                                         (moves state seen)))])
-          (for-each println next);next list prints state and move in non-pair form                             
+          (for-each println next);next list prints state and move in non-pair form                                                                             
+          (for-each println (map cons (build-list next 2 2) (build-list next 1 2))); this appends every second item in next to the one immediately before it, \
+thus forming pairs                                                                                                                                             
           (if (null? next)
               #f
-              (for neighbour in next ;;this won't work yet                                                     
-                   (if (state-is-solved? (car neighbour)) ;error on car - neighbour is not a pair
+              (for neighbour in next ;;this won't work yet                                                                                                     
+                   (if (state-is-solved? (car neighbour))
                        (reverse (cdr neighbour))
                        (search next))))))))
 
 
 
   (define (moves state seen)
-    ;(print "In moves \n")                                                                                     
+    ;(print "In moves \n")                                                                                                                                     
     (let loop ([neighbours '()]
-               [candidates (apply append (make-candidates))]) ;are candidates generated each time loop runs?   
-      (if (null? candidates); this will never actually be null                                                 
+               [candidates (apply append (make-candidates))]) ;are candidates generated each time loop runs?                                                   
+      (if (null? candidates); this will never actually be null                                                                                                 
           neighbours
           (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
-                               (state-vertical-move (car state) (caar candidates)(cdar candidates)))]);horizon\
-tal or vertical moves or neither will succeed here. if either succeed, keep processing. this may be the best p\
-lace to filter for seen neighbours or immediately after this in the if statement, as if we continue, we will s\
-et the neighbour as seen again, even if it has been seen                                                       
-            (if (and neighbour (not (hashtable-contains? seen neighbour))) ;this should filter seen neighbours\
- out                                                                                                           
+                               (state-vertical-move (car state) (caar candidates)(cdar candidates)))]);horizontal or vertical moves or neither will succeed he\
+re. if either succeed, keep processing. this may be the best place to filter for seen neighbours or immediately after this in the if statement, as if we conti\
+nue, we will set the neighbour as seen again, even if it has been seen                                                                                         
+            (if (and neighbour (not (hashtable-contains? seen neighbour))) ;this should filter seen neighbours out                                             
                 (begin
-                  (hashtable-set! seen neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (c\
-dr state)));set the neighbour as seen                                                                          
-                  (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr \
-state))) neighbours)
-                        (cdr candidates))) ;([((((neighbour, (move)), state), neighbours))], candidates) is pa\
-ssed back to loop. loops form expects a list of neighbours, and candidates.                                    
-                (loop neighbours (cdr candidates)))))));pass back neighbours if neighbour doesnt exist along w\
-ith the tail of the list of candidates to move on and process the next candidate.                              
+                  (hashtable-set! seen neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state)));set the neighbour as seen            
+                  (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
+                        (cdr candidates))) ;([((((neighbour, (move)), state), neighbours))], candidates) is passed back to loop. loops form expects a list of \
+neighbours, and candidates.                                                                                                                                    
+                (loop neighbours (cdr candidates)))))));pass back neighbours if neighbour doesnt exist along with the tail of the list of candidates to move o\
+n and process the next candidate.                                                                                                                              
 
-  (define (make-candidates);creates a list of every possible position and offsets associated with them.        
+  (define (make-candidates);creates a list of every possible position and offsets associated with them.                                                        
     (map-for position from 1 to 64
              (map-for disp from -4 to 4
                       (cons position disp))))
-);close library                                                                                                
-
-
-
+(define (build-list alphabet count limit) ;used to help rectify the flattened next list in run                                                                 
+  (cond ((null? alphabet) '())
+        ((= count limit)
+         (cons (car alphabet)
+               (build-list (cdr alphabet) 1 limit)))
+        (else
+         (build-list (cdr alphabet) (+ count 1) limit))))
+);close library                                       
