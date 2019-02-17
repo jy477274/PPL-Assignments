@@ -25,22 +25,23 @@
   ;; occupied by the same piece carry the same letter.
   (define (solve-puzzle puzzle)
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;;
-    ;; IMPLEMENT THIS FUNCTION
-    ;;
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                                                                
+    ;;                                                                                                                                                         
+    ;; IMPLEMENT THIS FUNCTION                                                                                                                                 
+    ;;                                                                                                                                                         
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;                                                                                
     (let ([seen (make-eqv-hashtable)])
       (hashtable-set! seen (state-from-string-rep puzzle) '())
       (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
         (let* ([next (apply append (for state in current
-                                        (moves state seen)))])
+                                        (moves state seen)))]);                                                                                                
           (for-each println next);next list prints state and move in non-pair form                                                                             
           (for-each println (map cons (build-list next 2 2) (build-list next 1 2))); this appends every second item in next to the one immediately before it, \
 thus forming pairs                                                                                                                                             
           (if (null? next)
               #f
-              (for neighbour in next ;;this won't work yet                                                                                                     
+              (for neighbour in (map cons (build-list next 2 2) (build-list next 1 2)) ;for some reason, the pairs arent registering as pairs despite printing\
+ properly                                                                                                                                                      
                    (if (state-is-solved? (car neighbour))
                        (reverse (cdr neighbour))
                        (search next))))))))
@@ -77,4 +78,5 @@ n and process the next candidate.
                (build-list (cdr alphabet) 1 limit)))
         (else
          (build-list (cdr alphabet) (+ count 1) limit))))
-);close library                                       
+);close library                                                                                                                                                
+
