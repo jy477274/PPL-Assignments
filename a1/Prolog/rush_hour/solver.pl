@@ -33,7 +33,7 @@ solve_puzzle(State, [M|Moves]):-
     find_cars(State, Cars),
     between(-4, 4, Offset), Offset \= 0,
     pos_offset_move(Cars, Offset, M),
-    setof(M, gen_new_states(State, Cars, Offset, States),
+    setof(M, gen_new_states(State, Cars, Offset, States), States),
     solve_puzzle(States, Moves).
 
 
