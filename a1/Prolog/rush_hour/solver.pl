@@ -29,13 +29,12 @@ solve_puzzle(State, []):-
     state_is_solved(State).
 
 
-solve_puzzle(State, Solution):-
+solve_puzzle(State, [M|Moves]):-
     find_cars(State, Cars),
     between(-4, 4, Offset), Offset \= 0,
     pos_offset_move(Cars, Offset, M),
     setof(M, gen_new_states(State, Cars, Offset, States),
-    solve_puzzle(States, Moves),
-    Solution = [M|Moves].
+    solve_puzzle(States, Moves).
 
 
 gen_new_states(State, Cars, Offset, States):-
