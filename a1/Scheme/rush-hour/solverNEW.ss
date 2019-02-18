@@ -37,11 +37,11 @@
                                         (moves state seen)))]);                                                                                                
           (for-each println next);next list prints state and move in non-pair form                                                                             
           (for-each println (map cons (build-list next 2 2) (build-list next 1 2))); this appends every second item in next to the one immediately before it, \
-thus forming pairs                                                                                                                                             
+;thus forming pairs                                                                                                                                             
           (if (null? next)
               #f
               (for neighbour in (map cons (build-list next 2 2) (build-list next 1 2)) ;for some reason, the pairs arent registering as pairs despite printing\
- properly                                                                                                                                                      
+ ;properly                                                                                                                                                      
                    (if (state-is-solved? (car neighbour))
                        (reverse (cdr neighbour))
                        (search next))))))))
@@ -56,16 +56,16 @@ thus forming pairs
           neighbours
           (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
                                (state-vertical-move (car state) (caar candidates)(cdar candidates)))]);horizontal or vertical moves or neither will succeed he\
-re. if either succeed, keep processing. this may be the best place to filter for seen neighbours or immediately after this in the if statement, as if we conti\
-nue, we will set the neighbour as seen again, even if it has been seen                                                                                         
+;re. if either succeed, keep processing. this may be the best place to filter for seen neighbours or immediately after this in the if statement, as if we conti\
+;nue, we will set the neighbour as seen again, even if it has been seen                                                                                         
             (if (and neighbour (not (hashtable-contains? seen neighbour))) ;this should filter seen neighbours out                                             
                 (begin
                   (hashtable-set! seen neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state)));set the neighbour as seen            
                   (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
                         (cdr candidates))) ;([((((neighbour, (move)), state), neighbours))], candidates) is passed back to loop. loops form expects a list of \
-neighbours, and candidates.                                                                                                                                    
+;neighbours, and candidates.                                                                                                                                    
                 (loop neighbours (cdr candidates)))))));pass back neighbours if neighbour doesnt exist along with the tail of the list of candidates to move o\
-n and process the next candidate.                                                                                                                              
+;n and process the next candidate.                                                                                                                              
 
   (define (make-candidates);creates a list of every possible position and offsets associated with them.                                                        
     (map-for position from 1 to 64
