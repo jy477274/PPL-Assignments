@@ -22,7 +22,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 puzzle_solution(Puzzle, Solution) :-
   puzzle_state(Puzzle, State),
-  solve_puzzle(State, Solution).
+  once(solve_puzzle(State, Solution)).
 
 
 solve_puzzle(State, Solution):-
