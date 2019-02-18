@@ -1,4 +1,4 @@
-
+File Edit Options Buffers Tools Help
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % rush_hour/solver.pl
@@ -25,9 +25,9 @@ puzzle_solution(Puzzle, Solution) :-
   once(solve_puzzle(State, Solution)).
 
 
-solve_puzzle(State, Solution):-
-    state_is_solved(State),
-    Solution = [].
+solve_puzzle(State, []):-
+    state_is_solved(State).
+
 
 solve_puzzle(State, Solution):-
     find_cars(State, Cars),
@@ -51,6 +51,3 @@ find_cars(State, Cars):-
 
 % Solve the puzzle
 %solve_puzzle(Puzzle, Moves).
-
-
-
