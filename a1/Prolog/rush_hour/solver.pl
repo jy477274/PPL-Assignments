@@ -26,22 +26,25 @@ puzzle_solution(Puzzle, Solution) :-
 
 
 solve_puzzle(State, Solution):-
-    state_is_solved(State).
+    state_is_solved(State),
+    Solution = [].
 
 solve_puzzle(State, Solution):-
-    gen_new_states(State, States),
-    solve_puzzle(States, Solution).
-
-
-gen_new_states(State, States):-
     find_cars(State, Cars),
     between(-4, 4, Offset), Offset \= 0,
+    pos_offset_move(Cars, Offset, M),
+    setof(M, gen_new_states(State, Cars, Offset, States),
+    solve_puzzle(States, Moves),
+    Solution = [M|Moves].
+
+
+gen_new_states(State, Cars, Offset, States):-
     horizontal_move(State, Cars, Offset, HStates),
     vertical_move(State, Cars, Offset, VStates),
     append(HStates,VStates, States).
 
 
-find-cars(State, Cars):-
+find_cars(State, Cars):-
     between(0, 63, Pos),
     findall(Pos, state_is_end(States, Pos), Cars).
 
