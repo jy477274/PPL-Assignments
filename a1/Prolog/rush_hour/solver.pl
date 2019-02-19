@@ -1,5 +1,4 @@
-File Edit Options Buffers Tools Help
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %
 % rush_hour/solver.pl
 %
@@ -13,7 +12,7 @@ File Edit Options Buffers Tools Help
 
 % Import the state predicates
 :- [rush_hour/state].
-
+:- use_module(library(clpfd)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -43,8 +42,8 @@ car_pos(StateN, CarPos) :-
 
 
 gen_new_states(StateN, CarPos, Offset, NewState) :-
-    horizontal_move(StateN, CarPos, Offset, NewState);
-    vertical_move(StateN, CarPos, Offset, NewState).
+    horizontal_move(StateN, CarPos, Offset, NewState)
+    ;vertical_move(StateN, CarPos, Offset, NewState).
 
 
 % Solve the puzzle
