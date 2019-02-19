@@ -30,74 +30,42 @@
     ;; IMPLEMENT THIS FUNCTION
     ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    ;Create start state from string representation
-    (define startstate (state-from-string-rep puzzle))
-    (let* (
-          [current (list (list '() startstate))]
-          [next (list '())]
-          [seen (make-eqv-hashtable)])
-          ;(print startstate)
-
-          (hashtable-set! seen startstate #t)
-
-          (begin (run seen current next))))
-
-  (define (run seen current next)
-    (print "In run")
-    (for state in current
-         ;(print (cdr state)) ;mf prints a mf string
-         (let* ([neighbours (moves (cadr state))])
-           (print "move generation successful")
-           ;check if neighbours is empty -> no solution if empty
-           (if (null? neighbours)
-               #f  ;no solution
-               ((for neighbour in neighbours
-                     (cond [(not(hashtable-contains? seen (car neighbour)))
-                            (hashtable-set! seen (car neighbour) #t)
-                            (cons neighbour next)]
-
-                           ;print solution moves
-                           [(state-is-solved? (car neighbour))
-                            (for-each println (reverse (cdr neighbour)))]
-
-                           [else (run seen next '())])))))))
+    (let ([seen (make-eqv-hashtable)])
+      (hashtable-set! seen (state-from-string-rep puzzle) #t)
+      (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
+        (let* ([next (apply append (for state in current
+                                        (moves state seen)))])
+          (for-each println next)
+          (if (null? next)
+              #f
+              (for neighbour in next
+                   (if (state-is-solved? (car neighbour))
+                       (reverse (cdr neighbour))
+                       (search next))))))))
 
 
-  (define (moves state)
-    (print "In moves")
-    (print state)
-    (let*([position (make-list 0 64)] ;need make-list func
-          [disp '(-4 -3 -2 -1 1 2 3 4)])
-      (begin
-        (filter (lambda (value) value)
-                (apply append
-                       (map (lambda (pos)
-                              (if (state-is-horizontal? state pos)
-                                  (begin
-                                    (map (lambda (disp)
-                                         (begin
-                                           (if (state-horizontal-move state pos disp)
-                                               (begin
-                                                 (cons state
-                                                       (cons (state-horizontal-move state pos disp)
-                                                             (state-make-move pos disp)))) #f))) disp))
-                                    (begin
-                                      (map (lambda (disp)
-                                             (begin
-                                               (if (state-vertical-move state pos disp)
-                                                   (begin
-                                                     (cons state
-                                                           (cons (state-vertical-move pos disp)
-                                                                 (state-make-move pos disp))))#f)))disp))))
 
-                            (filter (lambda (pos) (state-is-end? state pos)) position)))))))
+  (define (moves state seen)
+    ;(print "In moves \n")
+    (let loop ([neighbours '()]
+               [candidates (apply append (make-candidates))])
+      (if (null? candidates)
+          neighbours
+          (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
+                               (state-vertical-move (car state)(caar candidates)(cdar candidates)))])
+            (if (and neighbour
+                     (not (hashtable-contains? seen neighbour)))
+                (begin
+                  (hashtable-set! seen neighbour #t)
+                  (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
+                        (cdr candidates)))
+                (loop neighbours (cdr candidates)))))))
 
-
-  (define (make-list start end)
-    (if (<= start end)
-        (cons start (make-list (+ start 1) end))
-        '()))
+  (define (make-candidates)
+    (map-for position from 1 to 64
+             (map-for disp from -4 to 4
+                      (cons position disp))))
 );close library
+
 
 
