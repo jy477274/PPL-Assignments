@@ -31,14 +31,14 @@
     ;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     (let ([seen (make-eqv-hashtable)])
-      (hashtable-set! seen (state-from-string-rep puzzle) '())
+      (hashtable-set! seen (state-from-string-rep puzzle) #t)
       (let search ([current (list (cons (state-from-string-rep puzzle) '() ))])
         (let* ([next (apply append (for state in current
                                         (moves state seen)))])
-          ;(for-each println next)
+          (for-each println next)
           (if (null? next)
               #f
-              (for neighbour in next ;;this won't work yet
+              (for neighbour in next
                    (if (state-is-solved? (car neighbour))
                        (reverse (cdr neighbour))
                        (search next))))))))
@@ -52,10 +52,11 @@
       (if (null? candidates)
           neighbours
           (let ([neighbour (or (state-horizontal-move (car state)(caar candidates)(cdar candidates))
-                               (state-vertical-move (car state) (caar candidates)(cdar candidates)))])
-            (if neighbour
+                               (state-vertical-move (car state)(caar candidates)(cdar candidates)))])
+            (if (and neighbour
+                     (not (hashtable-contains? seen neighbour)))
                 (begin
-                  (hashtable-set! seen neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state)))
+                  (hashtable-set! seen neighbour #t)
                   (loop (cons (cons neighbour (cons (state-make-move (caar candidates)(cdar candidates)) (cdr state))) neighbours)
                         (cdr candidates)))
                 (loop neighbours (cdr candidates)))))))
@@ -65,7 +66,6 @@
              (map-for disp from -4 to 4
                       (cons position disp))))
 );close library
-
 
 
 
