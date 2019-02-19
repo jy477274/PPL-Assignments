@@ -25,7 +25,7 @@ solve_puzzle(Puzzle, Moves) :-
 
 
 % When a solution is found builds an empty list of move objects
-move_list_gen(State, [ ]) :-
+move_list_gen(State, []) :-
     state_is_solved(State),!.
 
 
